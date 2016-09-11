@@ -1,0 +1,3 @@
+--This file is executed on app startup
+--insert into hotel(name, address, zip) values ('Golden Luxury ', 'Miami Beach', '4001')
+--insert into hotel(name, address, zip) values ('John's hotel', 'Ocean City', '3006')

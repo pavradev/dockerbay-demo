@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.github.pavradev.dockerbay-demo</groupId>
+        <artifactId>dockerbay-demo-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.github.pavradev.dockerbay-demo</groupId>
+    <artifactId>docker</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.pavradev.dockerbay-demo</groupId>
+            <artifactId>webapp</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>0.15.16</version>
+                    <configuration>
+                        <images>
+                            <image>
+                                <name>demo/webapp:${project.version}</name>
+                                <alias>webapp</alias>
+                                <build>
+                                    <from>java:8</from>
+                                    <tags>
+                                        <tag>latest</tag>
+                                    </tags>
+                                    <assembly>
+                                        <descriptor>docker-assembly.xml</descriptor>
+                                    </assembly>
+                                    <cmd>
+                                        <shell>java -jar /maven/webapp.jar</shell>
+                                    </cmd>
+                                    <workdir>/maven</workdir>
+                                </build>
+                                <run>
+                                    <namingStrategy>alias</namingStrategy>
+                                    <ports>
+                                        <port>8082:8082</port>
+                                    </ports>
+                                    <links>
+                                        <link>postgres:postgres</link>
+                                        <link>reviews-mock:reviews-mock</link>
+                                    </links>
+                                </run>
+                            </image>
+                            <image>
+                                <name>postgres:9</name>
+                                <alias>postgres</alias>
+                                <run>
+                                    <namingStrategy>alias</namingStrategy>
+                                    <wait>
+                                        <log>database system is ready to accept connections</log>
+                                        <time>10000</time>
+                                    </wait>
+                                </run>
+                            </image>
+                            <image>
+                                <name>ekino/wiremock:2.1.11</name>
+                                <alias>reviews-mock</alias>
+                                <run>
+                                    <ports>
+                                        <port>8083:8083</port>
+                                    </ports>
+                                    <cmd>--port 8083 --verbose</cmd>
+                                    <namingStrategy>alias</namingStrategy>
+                                </run>
+                            </image>
+                        </images>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Automatically build webapp docker image when we run component tests -->
+        <profile>
+            <id>component-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>package-docker</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
