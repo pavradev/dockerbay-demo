@@ -95,7 +95,7 @@ public class WebappCT {
     }
 
     private void getDummyHotel() {
-        resp = reqSpec.get("/api/hotels/1");
+        resp = given(reqSpec).get("/api/hotels/1");
     }
 
     private void dummyHotelHasReviews() {
@@ -107,7 +107,7 @@ public class WebappCT {
     }
 
     private void dummyHotelExists() {
-        reqSpec.contentType(ContentType.JSON)
+        given(reqSpec).contentType(ContentType.JSON)
                 .body("{\"name\":\"Dummy hotel\",\"address\":\"Dummy address\",\"zip\":\"4001\"}")
                 .post("/api/hotels");
     }
@@ -119,7 +119,7 @@ public class WebappCT {
     }
 
     private void updateDummyHotelAddress() {
-        reqSpec.contentType(ContentType.JSON)
+        given(reqSpec).contentType(ContentType.JSON)
                 .body("{\"address\":\"Updated address\",\"zip\":\"4004\"}")
                 .put("/api/hotels/1");
     }
@@ -131,6 +131,6 @@ public class WebappCT {
     }
 
     private void deleteDummyHotel() {
-        reqSpec.delete("/api/hotels/1");
+        given(reqSpec).delete("/api/hotels/1");
     }
 }
