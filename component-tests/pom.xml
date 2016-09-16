@@ -27,7 +27,7 @@
         <dependency>
             <groupId>com.github.pavradev</groupId>
             <artifactId>dockerbay</artifactId>
-            <version>1.0.0</version>
+            <version>1.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -1,6 +1,7 @@
 package com.github.pavradev.dockerbay.demo;
 
 import com.github.pavradev.dockerbay.DockerRule;
+import com.github.pavradev.dockerbay.Dockerbay;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.http.ContentType;
@@ -27,10 +28,11 @@ public class WebappCT {
     private Response resp;
 
     @Rule
-    public DockerRule dockerRule = DockerRule.getDefault()
+    public DockerRule dockerRule = Dockerbay.getDockerRuleBuilder()
             .addContainer(PostgresContainer.getConfig())
             .addContainer(ReviewsMockContainer.getConfig())
-            .addContainer(WebappContainer.getConfig());
+            .addContainer(WebappContainer.getConfig())
+            .build();
 
     @Before
     public void before() {
