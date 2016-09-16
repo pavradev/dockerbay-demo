@@ -42,7 +42,7 @@ public class WebappCT {
 
     @Test
     public void shouldGetHotelWithReviews() {
-        //giver
+        //given
         dummyHotelExists();
         //and
         dummyHotelHasReviews();
@@ -79,15 +79,21 @@ public class WebappCT {
     }
 
     private void assertHotelReviewsNotEmpty() {
-        resp.then().assertThat().body("reviews.size()", CoreMatchers.equalTo(1));
+        resp.then()
+                .assertThat()
+                .body("reviews.size()", CoreMatchers.equalTo(1));
     }
 
     private void assertDummyHotelReturned() {
-        resp.then().assertThat().statusCode(200).and().body("name", CoreMatchers.equalTo("Dummy hotel"));
+        resp.then()
+                .assertThat()
+                .statusCode(200)
+                .and()
+                .body("name", CoreMatchers.equalTo("Dummy hotel"));
     }
 
     private void getDummyHotel() {
-        resp = given(reqSpec).get("/api/hotels/1");
+        resp = reqSpec.get("/api/hotels/1");
     }
 
     private void dummyHotelHasReviews() {
@@ -99,25 +105,30 @@ public class WebappCT {
     }
 
     private void dummyHotelExists() {
-        given(reqSpec)
-                .contentType(ContentType.JSON)
+        reqSpec.contentType(ContentType.JSON)
                 .body("{\"name\":\"Dummy hotel\",\"address\":\"Dummy address\",\"zip\":\"4001\"}")
                 .post("/api/hotels");
     }
 
     private void assertHotelAddressUpdated() {
-        resp.then().assertThat().body(containsString("Updated address"));
+        resp.then()
+                .assertThat()
+                .body(containsString("Updated address"));
     }
 
     private void updateDummyHotelAddress() {
-        given(reqSpec).contentType(ContentType.JSON).body("{\"address\":\"Updated address\",\"zip\":\"4004\"}").put("/api/hotels/1");
+        reqSpec.contentType(ContentType.JSON)
+                .body("{\"address\":\"Updated address\",\"zip\":\"4004\"}")
+                .put("/api/hotels/1");
     }
 
     private void assertNothingReturned() {
-        resp.then().assertThat().body(Matchers.isEmptyString());
+        resp.then()
+                .assertThat()
+                .body(Matchers.isEmptyString());
     }
 
     private void deleteDummyHotel() {
-        given(reqSpec).delete("/api/hotels/1");
+        reqSpec.delete("/api/hotels/1");
     }
 }
